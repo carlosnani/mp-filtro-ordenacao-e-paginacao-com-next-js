@@ -1,3 +1,4 @@
+'use client';
 import {
   Table,
   TableBody,
@@ -8,6 +9,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from './ui/badge';
 import { ChevronsUpDown } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const formatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -25,20 +27,42 @@ export type OrderTableProps = {
   updated_at: Date;
 };
 
+
 export default function OrdersTable({ orders }: { orders: OrderTableProps[] }) {
+
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const { replace } = useRouter();
+
+  function handleClick(key: string) {
+     const params = new URLSearchParams(searchParams);
+      
+     if(params.get('sort') === key) {
+      params.set('sort', `-${key}`);
+     } else if (params.get('sort') === `-${key}`) {
+      params.delete('sort');
+     } else if (key){
+        params.set('sort', key);
+     }
+      
+     replace(`${pathName}?${params.toString()}`, {scroll: false});
+  }
+  
+
+
   return (
     <Table>
       <TableHeader>
         <TableRow className="w-full">
           <TableHead className="table-cell">Cliente</TableHead>
           <TableHead className="table-cell">Status</TableHead>
-          <TableHead className="hidden md:table-cell cursor-pointer justify-end items-center gap-1">
+          <TableHead className="hidden md:table-cell cursor-pointer justify-end items-center gap-1" onClick={() => {handleClick('order_date')}}>
             <div className="flex items-center gap-1">
               Data
               <ChevronsUpDown className="w-4" />
             </div>
           </TableHead>
-          <TableHead className="text-right cursor-pointer flex justify-end items-center gap-1">
+          <TableHead className="text-right cursor-pointer flex justify-end items-center gap-1" onClick={() => {handleClick('amount_in_cents')}}>
             Valor
             <ChevronsUpDown className="w-4" />
           </TableHead>
