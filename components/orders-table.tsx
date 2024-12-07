@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from './ui/badge';
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronsDown, ChevronsUp, ChevronsUpDown } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const formatter = new Intl.NumberFormat('pt-BR', {
@@ -48,7 +48,15 @@ export default function OrdersTable({ orders }: { orders: OrderTableProps[] }) {
      replace(`${pathName}?${params.toString()}`, {scroll: false});
   }
   
-
+  function getSortIcon(key: string) {
+    if (searchParams.get('sort') === key) {
+      return <ChevronsDown className='w-4'/>
+    } else if (searchParams.get('sort') === `-${key}`) {
+      return <ChevronsUp className='w-4'/>
+    } else {
+      return <ChevronsUpDown className='w-4'/>
+    }
+  }
 
   return (
     <Table>
@@ -59,12 +67,12 @@ export default function OrdersTable({ orders }: { orders: OrderTableProps[] }) {
           <TableHead className="hidden md:table-cell cursor-pointer justify-end items-center gap-1" onClick={() => {handleClick('order_date')}}>
             <div className="flex items-center gap-1">
               Data
-              <ChevronsUpDown className="w-4" />
+              {getSortIcon('order_date')}
             </div>
           </TableHead>
           <TableHead className="text-right cursor-pointer flex justify-end items-center gap-1" onClick={() => {handleClick('amount_in_cents')}}>
             Valor
-            <ChevronsUpDown className="w-4" />
+            {getSortIcon('amount_in_cents')}
           </TableHead>
         </TableRow>
       </TableHeader>
