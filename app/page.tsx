@@ -17,6 +17,7 @@ type ComponentProps = {
     search?: string,
     status?: string,
     sort?: string
+    page?: string
   }
 }
 
@@ -27,17 +28,22 @@ export default async function Component({ searchParams }: ComponentProps) {
       params: {
         search: searchParams?.search,
         status: searchParams?.status,
-        sort: searchParams?.sort                
+        sort: searchParams?.sort,
+        page: searchParams?.page
       }
     }
   ) 
 
-
   const orders = response.data.data
- 
+  let links: {url: string, label: string, active: boolean, id: number}[] = response.data.meta.links;
+
+  const lastPage = response.data.meta.last_page;
+
+  links = links.map((link, index) => ({ ...link, id: index }));
+  
   return (
     <main className="container px-1 py-10 md:p-10">
-      <Card>
+      <Card >
         <CardHeader className="px-7">
           <CardTitle>Pedidos</CardTitle>
           <CardDescription>
@@ -51,7 +57,7 @@ export default async function Component({ searchParams }: ComponentProps) {
         <CardContent>
           <OrdersTable orders={orders} />
           <div className="mt-8">
-            <Pagination />
+            <Pagination links={links} lastPage={lastPage} />
           </div>
         </CardContent>
       </Card>
