@@ -47,7 +47,8 @@ export default function OrdersTable({ orders }: { orders: OrderTableProps[] }) {
       
      replace(`${pathName}?${params.toString()}`, {scroll: false});
   }
-  
+
+
   function getSortIcon(key: string) {
     if (searchParams.get('sort') === key) {
       return <ChevronsDown className='w-4'/>
@@ -96,8 +97,6 @@ export default function OrdersTable({ orders }: { orders: OrderTableProps[] }) {
             </TableRow>            
           </>
         ))}
-
-
 
       </TableBody>
     </Table>
